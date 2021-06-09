@@ -34,7 +34,7 @@ inputs:
     default: '""'
 runs:
   using: 'docker'
-  image: joshuasbrown/cpp-py-formatter:latest
+  image: docker://joshuasbrown/cpp-py-formatter:latest
   args:
   - --github-token
   - ${{ inputs.token }}

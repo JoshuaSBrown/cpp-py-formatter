@@ -42,7 +42,7 @@ runs:
   - ${{ inputs.clangFormatVersion }}
   - --include
   - ${{ inputs.include_c }}
-  - --include_py
+  - --py_include
   - ${{ inputs.include_py }}
   - --exclude
   - ${{ inputs.exclude }}

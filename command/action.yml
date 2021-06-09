@@ -1,0 +1,60 @@
+name: 'C++ Py Auto-Format (clang-format and black automation and checks)'
+description:
+  C++ Py Auto-Format provides the ability to both auto-format your code, and to
+  check that your code is formatted.
+inputs:
+  token:
+    description:
+      The token used to authenticate with GitHub.
+    required: true
+  clangFormatVersion:
+    description:
+      Major Clang Version number. Supports clang 5 to 10. Default 10
+    required: false
+    default: '10'
+  include_c:
+    description:
+      Comma-separated list of file globs (e.g '**/*.cpp,**/*.hpp') that
+      matches which tracked files should be formatted.
+    required: false
+    default:
+      '**/*.c,**/*.h,**/*.C,**/*.H,**/*.cpp,**/*.hpp,**/*.cxx,**/*.hxx,**/*.c++,**/*.h++,**/*.cc,**/*.hh'
+  include_py:
+    description:
+      Comma-separated list of file globs (e.g '**/*.py') that
+      matches which tracked files should be formatted.
+    required: false
+    default:
+      '**/*.py'
+  exclude:
+    description:
+      Comma-separate list of files globs that indicate which files should
+      not be formatted.
+    required: false
+    default: '""'
+  botName:
+    description: >
+      The name of the bot. E.g. with "botName: 'mybot'", the command is invoked
+      with @mybot.
+    required: false
+    default: 'cpp-py-formatter'
+runs:
+  using: 'docker'
+  image: docker://joshuasbrown/cpp-py-formatter:latest
+  args:
+  - --github-token
+  - ${{ inputs.token }}
+  - --clang-format-version
+  - ${{ inputs.clangFormatVersion }}
+  - --include_c
+  - ${{ inputs.include_c }}
+  - --include_py
+  - ${{ inputs.include_py }}
+  - --exclude
+  - ${{ inputs.exclude }}
+  - --bot-name
+  - ${{ inputs.botName }}
+  - command
+branding:
+  icon: 'align-left'
+  color: 'red'

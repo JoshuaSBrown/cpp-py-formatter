@@ -46,7 +46,7 @@ runs:
   - ${{ inputs.token }}
   - --clang-format-version
   - ${{ inputs.clangFormatVersion }}
-  - --include_c
+  - --include
   - ${{ inputs.include_c }}
   - --include_py
   - ${{ inputs.include_py }}

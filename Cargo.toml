@@ -2,7 +2,7 @@
 name = "cpp-py-format"
 version = "0.3.0"
 authors = ["Andrew Gaspar <andrew.gaspar@outlook.com>","Joshua Brown <joshbro42867@yahoo.com>", "Philipp Grete <pgrete@hs.uni-hamburg.de"]
-edition = "2022"
+edition = "2018"
 
 [dependencies]
 glob = "0.3.0"

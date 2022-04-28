@@ -9,9 +9,9 @@ inputs:
     required: true
   clangFormatVersion:
     description:
-      Major Clang Version number. Supports clang 5 to 10. Default 10
+      Major Clang Version number. Supports clang 10 to 13. Default 13
     required: false
-    default: '10'
+    default: '13'
   include_c:
     description:
       Comma-separated list of file globs (e.g '**/*.cpp,**/*.hpp') that

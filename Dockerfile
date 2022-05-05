@@ -18,5 +18,7 @@ RUN apt-get install -y git \
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install black
 
+RUN git config --global --add safe.directory /github/workspace
+
 COPY --from=builder /usr/local/cargo/bin/cpp-py-format /cpp-py-format
 ENTRYPOINT [ "/cpp-py-format" ]

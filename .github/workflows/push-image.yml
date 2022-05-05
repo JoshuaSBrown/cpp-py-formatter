@@ -9,13 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
-    - run: git checkout HEAD^
     - uses: whoan/docker-build-with-cache-action@v5
       with:
-        image_name: joshuasbrown/cpp-py-formatter
+        registry: ghcr.io
+        image_name: cpp-py-formatter
         image_tag: latest
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_TOKEN }}
+        username: pgrete
+        password: ${{ secrets.GHCR_TOKEN }}
         push_git_tag: true

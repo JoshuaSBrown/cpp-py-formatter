@@ -41,7 +41,7 @@ struct App {
 impl App {
     fn run() -> Result<(), Box<dyn Error>> {
         let matches = clap::App::new("cpp-py-format")
-            .author("Andrew Gaspar <andrew.gaspar@outlook.com>, Joshua Brown <joshbro42867@yahoo.com")
+            .author("Andrew Gaspar <andrew.gaspar@outlook.com>, Joshua Brown <joshbro42867@yahoo.com, Philipp Grete <pgrete@hs.uni-hamburg.de>")
             .about("Runner code for executing clang-format, and black")
             .arg(
                 Arg::with_name("github-token")
@@ -53,7 +53,7 @@ impl App {
                 Arg::with_name("clang-format-version")
                     .long("clang-format-version")
                     .takes_value(true)
-                    .default_value("10")
+                    .default_value("13")
                     .conflicts_with("clang-format-override"),
             )
             .arg(
@@ -106,7 +106,7 @@ impl App {
             if let Some(clang_format_override) = matches.value_of("clang-format-override") {
                 clang_format_override.into()
             } else if env::var("GITHUB_ACTION").is_ok() {
-                format!("/clang-format/clang-format-{}", clang_format_version).into()
+                format!("/usr/bin/clang-format-{}", clang_format_version).into()
             } else {
                 String::from_utf8(
                     Command::new("which")

@@ -9,9 +9,9 @@ inputs:
     required: true
   clangFormatVersion:
     description:
-      Major Clang Version number. Supports clang 5 to 10. Default 10
+      Major Clang Version number. Supports clang 10 to 12. Default 12
     required: false
-    default: '10'
+    default: '12'
   include_c:
     description:
       Comma-separated list of file globs (e.g '**/*.cpp,**/*.hpp') that
@@ -40,7 +40,7 @@ inputs:
     default: 'cpp-py-formatter'
 runs:
   using: 'docker'
-  image: docker://joshuasbrown/cpp-py-formatter:latest
+  image: docker://ghcr.io/pgrete/cpp-py-formatter:latest
   args:
   - --github-token
   - ${{ inputs.token }}

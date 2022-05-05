@@ -40,7 +40,7 @@ inputs:
     default: 'cpp-py-formatter'
 runs:
   using: 'docker'
-  image: docker://joshuasbrown/cpp-py-formatter:latest
+  image: https://ghcr.io/pgrete/cpp-py-formatter:latest
   args:
   - --github-token
   - ${{ inputs.token }}

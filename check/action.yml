@@ -34,7 +34,7 @@ inputs:
     default: '""'
 runs:
   using: 'docker'
-  image: https://ghcr.io/pgrete/cpp-py-formatter:latest
+  image: docker://ghcr.io/pgrete/cpp-py-formatter:latest
   args:
   - --github-token
   - ${{ inputs.token }}

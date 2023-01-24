@@ -5,6 +5,7 @@ on:
       - master
 jobs:
   image-cache:
+    environment: DOCKER
     name: Cache Image
     runs-on: ubuntu-latest
     steps:

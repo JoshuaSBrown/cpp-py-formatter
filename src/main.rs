@@ -391,18 +391,26 @@ FLAGS:
         self.configure()?;
         self.format_all();
 
-        if !matches.is_present("amend") {
-            assert!(cmd("git", &["commit", "-am", "cpp-py-formatter"])?
-                .wait()?
-                .success());
+        let git_diff = Command::new("git")
+            .args(&["diff", "--exit-code"])
+            .output();
 
-            assert!(cmd("git", &["push"])?.wait()?.success());
-        } else {
-            assert!(cmd("git", &["commit", "-a", "--amend", "--no-edit"])?
-                .wait()?
-                .success());
+        let git_diff_str = String::from_utf8_lossy(&git_diff.stdout);
 
-            assert!(cmd("git", &["push", "--force"])?.wait()?.success());
+        if git_diff_str.len() > 0 {
+            if !matches.is_present("amend") {
+                assert!(cmd("git", &["commit", "-am", "cpp-py-formatter"])?
+                    .wait()?
+                    .success());
+
+                assert!(cmd("git", &["push"])?.wait()?.success());
+            } else {
+                assert!(cmd("git", &["commit", "-a", "--amend", "--no-edit"])?
+                    .wait()?
+                    .success());
+
+                assert!(cmd("git", &["push", "--force"])?.wait()?.success());
+            }
         }
 
         Ok(())

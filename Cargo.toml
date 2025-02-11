@@ -1,6 +1,6 @@
 [package]
 name = "cpp-py-format"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Andrew Gaspar <andrew.gaspar@outlook.com>","Joshua Brown <joshbro42867@yahoo.com>"]
 edition = "2024"
 

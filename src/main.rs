@@ -219,6 +219,7 @@ impl App {
                 "-b",
                 branch,
                 "--depth",
+                "--tags",
                 &depth.to_string(),
                 &format!(
                     "https://x-access-token:{}@github.com/{}.git",

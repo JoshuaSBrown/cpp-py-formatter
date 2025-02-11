@@ -211,9 +211,7 @@ impl App {
         Ok(())
     }
 
-    fn clone(&self, full_name: &str, r#ref: &str, depth: usize) -> Result<(), Box<dyn Error>> {
-        let (ref_type, ref_name) = ref_to_branch(r#ref).ok_or("Invalid reference")?;
-
+    fn clone(&self, full_name: &str, branch: &str, depth: usize) -> Result<(), Box<dyn Error>> {
         assert!(cmd(
             "git",
             &[
@@ -231,14 +229,6 @@ impl App {
         )?
         .wait()?
         .success());
-
-        if ref_type == "tag" {
-            // Checkout the commit associated with the tag
-            assert!(cmd("git", &["checkout", ref_name])?.wait()?.success());
-        } else {
-            // Checkout the branch
-            assert!(cmd("git", &["checkout", ref_name])?.wait()?.success());
-        }
 
         Ok(())
     }
@@ -420,7 +410,7 @@ FLAGS:
 
     fn check(&self, _matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         let payload: GitHubPushEvent = load_payload()?;
-        let branch = ref_to_branch(&payload.r#ref);
+        let branch = ref_to_branch(&payload.r#ref).ok_or("Invalid reference")?;
         self.clone(&payload.repository.full_name, branch, 1)?;
         self.format_all();
 
@@ -449,16 +439,16 @@ fn load_payload<T: DeserializeOwned>() -> Result<T, Box<dyn Error>> {
     Ok(serde_json::from_str(&github_event)?)
 }
 
-fn ref_to_branch(r#ref: &str) -> Option<(&str, &str)> {
+fn ref_to_branch(r#ref: &str) -> &str{
     let branch_prefix = "refs/heads/";
     let tag_prefix = "refs/tags/";
 
     if r#ref.starts_with(branch_prefix) {
-        Some(("branch", &r#ref[branch_prefix.len()..]))
+        &r#ref[branch_prefix.len()..]
     } else if r#ref.starts_with(tag_prefix) {
-        Some(("tag", &r#ref[tag_prefix.len()..]))
+        &r#ref[tag_prefix.len()..]
     } else {
-        None
+        r#ref
     }
 }
 

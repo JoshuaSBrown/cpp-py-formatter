@@ -211,7 +211,9 @@ impl App {
         Ok(())
     }
 
-    fn clone(&self, full_name: &str, branch: &str, depth: usize) -> Result<(), Box<dyn Error>> {
+    fn clone(&self, full_name: &str, r#ref: &str, depth: usize) -> Result<(), Box<dyn Error>> {
+        let (ref_type, ref_name) = ref_to_branch(r#ref).ok_or("Invalid reference")?;
+
         assert!(cmd(
             "git",
             &[
@@ -230,10 +232,18 @@ impl App {
         .wait()?
         .success());
 
+        if ref_type == "tag" {
+            // Checkout the commit associated with the tag
+            assert!(cmd("git", &["checkout", ref_name])?.wait()?.success());
+        } else {
+            // Checkout the branch
+            assert!(cmd("git", &["checkout", ref_name])?.wait()?.success());
+        }
+
         Ok(())
     }
 
-    fn list_cpp_files<'a>(&'a self) -> impl Iterator<Item = String> + 'a {
+    fn list_files<'a>(&'a self, includes: &'a [Pattern], excludes: &'a [Pattern]) -> impl Iterator<Item = String> + 'a {
         BufReader::new(
             Command::new("git")
                 .args(&["ls-tree", "-r", "HEAD", "--name-only", "--full-tree"])
@@ -243,26 +253,18 @@ impl App {
                 .stdout
                 .unwrap(),
         )
-        .lines()
-        .map(|s| s.unwrap())
-        .filter(move |s| self.includes.iter().any(|p| p.matches(&s)))
-        .filter(move |s| !self.excludes.iter().any(|p| p.matches(&s)))
+            .lines()
+            .map(|s| s.unwrap())
+            .filter(move |s| includes.iter().any(|p| p.matches(&s)))
+            .filter(move |s| !excludes.iter().any(|p| p.matches(&s)))
+    }
+
+    fn list_cpp_files<'a>(&'a self) -> impl Iterator<Item = String> + 'a {
+        self.list_files(&self.includes, &self.excludes)
     }
 
     fn list_py_files<'a>(&'a self) -> impl Iterator<Item = String> + 'a {
-        BufReader::new(
-            Command::new("git")
-                .args(&["ls-tree", "-r", "HEAD", "--name-only", "--full-tree"])
-                .stdout(Stdio::piped())
-                .spawn()
-                .unwrap()
-                .stdout
-                .unwrap(),
-        )
-        .lines()
-        .map(|s| s.unwrap())
-        .filter(move |s| self.py_includes.iter().any(|p| p.matches(&s)))
-        .filter(move |s| !self.excludes.iter().any(|p| p.matches(&s)))
+        self.list_files(&self.py_includes, &self.excludes)
     }
 
     fn format_all(&self) {
@@ -447,14 +449,17 @@ fn load_payload<T: DeserializeOwned>() -> Result<T, Box<dyn Error>> {
     Ok(serde_json::from_str(&github_event)?)
 }
 
-fn ref_to_branch(r#ref: &str) -> &str {
-    let expected_prefix = "refs/heads/";
-    assert!(
-        r#ref.starts_with(expected_prefix),
-        "Unexpected push ref: {}",
-        r#ref
-    );
-    &r#ref[expected_prefix.len()..]
+fn ref_to_branch(r#ref: &str) -> Option<(&str, &str)> {
+    let branch_prefix = "refs/heads/";
+    let tag_prefix = "refs/tags/";
+
+    if r#ref.starts_with(branch_prefix) {
+        Some(("branch", &r#ref[branch_prefix.len()..]))
+    } else if r#ref.starts_with(tag_prefix) {
+        Some(("tag", &r#ref[tag_prefix.len()..]))
+    } else {
+        None
+    }
 }
 
 fn cmd<S: AsRef<OsStr>>(program: S, args: &[&str]) -> Result<Child, Box<dyn Error>> {

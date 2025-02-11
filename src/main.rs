@@ -388,7 +388,8 @@ FLAGS:
             .args(&["diff", "--exit-code"])
             .output();
 
-        let git_diff_str = String::from_utf8_lossy(&git_diff.stdout);
+        let git_diff_output = git_diff.unwrap();
+        let git_diff_str = String::from_utf8_lossy(&git_diff_output.stdout);
 
         if git_diff_str.len() > 0 {
             if !matches.is_present("amend") {
@@ -411,7 +412,7 @@ FLAGS:
 
     fn check(&self, _matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         let payload: GitHubPushEvent = load_payload()?;
-        let branch = ref_to_branch(&payload.r#ref).ok_or("Invalid reference")?;
+        let branch = ref_to_branch(&payload.r#ref);
         self.clone(&payload.repository.full_name, branch, 1)?;
         self.format_all();
 
@@ -449,6 +450,7 @@ fn ref_to_branch(r#ref: &str) -> &str{
     } else if r#ref.starts_with(tag_prefix) {
         &r#ref[tag_prefix.len()..]
     } else {
+        // Will error out if the ref is neither a branch or tag on clone 
         r#ref
     }
 }

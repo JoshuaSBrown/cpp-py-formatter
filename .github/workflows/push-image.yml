@@ -7,6 +7,7 @@ jobs:
   image-cache:
     name: Cache Image
     runs-on: ubuntu-latest
+    environment: DOCKER
     steps:
     - uses: actions/checkout@v4
       with:
@@ -30,5 +31,3 @@ jobs:
         context: .
         push: true
         tags: joshuasbrown/cpp-py-formatter:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max

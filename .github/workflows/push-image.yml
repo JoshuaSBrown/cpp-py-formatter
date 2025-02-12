@@ -8,11 +8,11 @@ jobs:
     name: Cache Image
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 2
     - run: git checkout HEAD^
-    - uses: whoan/docker-build-with-cache-action@v5
+    - uses: whoan/docker-build-with-cache-action@v8
       with:
         image_name: joshuasbrown/cpp-py-formatter
         image_tag: latest

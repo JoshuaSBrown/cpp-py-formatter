@@ -1,0 +1,33 @@
+name: Compile and Test
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - master
+
+jobs:
+  compile-and-test:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+
+      - uses: actions/cache@v4 # Add caching
+        with:
+          path: ~/.cargo/registry # Cache the Cargo registry
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install OpenSSL development headers
+        run: sudo apt install -y libssl-dev
+
+      - run: cargo build --verbose
+      - run: cargo test --verbose

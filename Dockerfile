@@ -7,7 +7,7 @@ COPY src ./src
 RUN cargo install --path .
 
 # GitHub Action Image
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 # Install our apt packages
 RUN apt update
 RUN apt upgrade -y

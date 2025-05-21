@@ -9,7 +9,7 @@ on:
 
 jobs:
   compile-and-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -17,7 +17,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.84.1
+          toolchain: 1.87.0
 
       - uses: actions/cache@v4 # Add caching
         with:

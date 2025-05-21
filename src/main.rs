@@ -218,8 +218,8 @@ impl App {
                 "clone",
                 "-b",
                 branch,
-                "--depth",
                 "--tags",
+                "--depth",
                 &depth.to_string(),
                 &format!(
                     "https://x-access-token:{}@github.com/{}.git",

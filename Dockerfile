@@ -1,5 +1,5 @@
 # Build the GitHub Action
-FROM rust:1.84.1 AS builder
+FROM rust:1.87.0 AS builder
 WORKDIR /usr/src/myapp
 COPY Cargo.toml .
 COPY Cargo.lock .
